@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="wcj-web:war">
+    <output-path>$PROJECT_DIR$/wcj-web/target</output-path>
+    <root id="archive" name="wcj-web.war">
+      <element id="artifact" artifact-name="wcj-web:war exploded" />
+    </root>
+  </artifact>
+</component>

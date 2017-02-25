@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dal.dao.UserDAO">
+    <sql id="userAllColumnExceptId">
+        username,nick,password,phone,avatar,gender,introduction,salt,classType,gmtCreate,gmtModify,isDeleted
+    </sql>
+
+    <resultMap id="userResultMap" type="dal.entity.user.UserDO">
+        <result column="id" property="id"/>
+        <result column="username" property="username" />
+        <result column="nick" property="nick"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="avatar" property="avatar"/>
+        <result column="gender" property="gender"/>
+        <result column="introduction" property="introduction"/>
+        <result column="salt" property="salt" />
+        <result column="classType" property="classType" />
+        <result column="gmtCreate" property="gmtCreate"/>
+        <result column="gmtModify" property="gmtModify"/>
+        <result column="isDeleted" property="isDeleted"/>
+    </resultMap>
+    <insert id="insertUser" parameterType="dal.entity.user.UserDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        user(<include refid="userAllColumnExceptId"/>)
+        VALUES(
+        username= ${username},
+        nick,
+        password,
+        phone,
+        avatar,
+        gender,
+        introduction,
+        salt,
+        classType,
+        gmtCreate=now(),
+        gmtModify=now(),
+        isDeleted= 'n'
+        )
+    </insert>
+
+    <select id="getUserByMobile" resultMap="userResult" parameterType="java.lang.String">
+        SELECT id,
+        <include refid="allColumnExceptId"/>
+        FROM USER
+        WHERE mobile=#{mobile};
+    </select>
+
+    <select id="getUserById" resultMap="userResult" parameterType="java.lang.Long">
+        SELECT id,
+        <include refid="allColumnExceptId"/>
+        FROM USER
+        WHERE id=${id};
+    </select>
+
+    <sql id="queryParam">
+        <if test="wbId != null">
+            wb_id=${wbId} AND
+        </if>
+        <if test="qqId != null">
+            qq_id=#{qqId} AND
+        </if>
+        <if test="wxId != null">
+            wx_id=#{wxId} AND
+        </if>
+        1=1
+    </sql>
+
+    <select id="getUserByTParam" resultMap="userResult">
+        SELECT id,
+        <include refid="allColumnExceptId"/>
+        FROM USER
+        WHERE id=(
+        SELECT uid
+        FROM user_extra
+        WHERE
+        <include refid="queryParam"/>
+        );
+    </select>
+
+    <select id="getUserExtraByUid" resultMap="userExtraResult">
+        SELECT id,
+        <include refid="userExtraAllColumnExceptId"/>
+        FROM user_extra
+        WHERE uid=${uid};
+    </select>
+
+    <insert id="save" parameterType="com.haocai.zeus.dal.entity.user.UserDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        USER(
+        <include refid="allColumnExceptId"/>
+        )
+        VALUES (
+        #{nick},
+        #{mobile},
+        #{password},
+        #{avatar},
+        #{gender},
+        #{introduction},
+        #{salt},
+        'ORDINARY',
+        now(),
+        now(),
+        'n'
+        )
+    </insert>
+
+    <insert id="saveExtraInfo" parameterType="com.haocai.zeus.dal.entity.user.UserExtraDO" useGeneratedKeys="true"
+            keyColumn="id">
+        INSERT INTO
+        user_extra(
+        <include refid="userExtraAllColumnExceptId"/>
+        )
+        VALUES (
+        ${uid},
+        #{wbId},
+        #{wbNick},
+        #{wxId},
+        #{wxNick},
+        #{qqId},
+        #{qqNick},
+        #{deliverAddress},
+        now(),
+        now(),
+        'n'
+        )
+    </insert>
+
+    <update id="update" parameterType="com.haocai.zeus.dal.entity.user.UserDO">
+        UPDATE USER
+        SET
+        <if test="nick != null">
+            nick=#{nick},
+        </if>
+        <if test="mobile != null">
+            mobile=#{mobile},
+        </if>
+        <if test="password != null">
+            password=#{password},
+        </if>
+        <if test="avatar != null">
+            avatar=#{avatar},
+        </if>
+        <if test="gender != null">
+            gender=#{gender},
+        </if>
+        <if test="introduction != null">
+            introduction=#{introduction},
+        </if>
+        <if test="isDeleted !=null">
+            isDeleted=#{isDeleted},
+        </if>
+        gmtModify=now()
+        WHERE id=#{id};
+    </update>
+
+    <update id="updateExtraInfo" parameterType="com.haocai.zeus.dal.entity.user.UserExtraDO">
+        UPDATE user_extra
+        SET
+        <if test="uid != null">
+            uid=${uid},
+        </if>
+        <if test="wbId != null">
+            wb_id=#{wbId},
+        </if>
+        <if test="wbNick != null">
+            wb_nick=#{wbNick},
+        </if>
+        <if test="wxId != null">
+            wx_id=#{wxId},
+        </if>
+        <if test="wxNick != null">
+            wx_nick=#{wxNick},
+        </if>
+        <if test="qqId != null">
+            qq_id = #{qqId},
+        </if>
+        <if test="qqNick != null">
+            qq_nick = #{qqNick},
+        </if>
+        gmtModify=now()
+        WHERE uid=#{uid};
+    </update>
+
+    <update id="deleteTPBind">
+        UPDATE user_extra
+        SET
+        <choose>
+            <when test="tpType == 'WB' ">
+                wb_id=NULL,
+                wb_nick=NULL
+            </when>
+            <when test="tpType == 'WX'">
+                wx_id=NULL,
+                wx_nick=NULL
+            </when>
+            <when test="tpType == 'QQ'">
+                qq_id=NULL ,
+                qq_nick=NULL
+            </when>
+        </choose>
+        WHERE uid=${uid};
+    </update>
+</mapper>

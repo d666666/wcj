@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/wcj.iml" filepath="$PROJECT_DIR$/wcj.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wcj-core/wcj-core.iml" filepath="$PROJECT_DIR$/wcj-core/wcj-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wcj-dal/wcj-dal.iml" filepath="$PROJECT_DIR$/wcj-dal/wcj-dal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wcj-service/wcj-service.iml" filepath="$PROJECT_DIR$/wcj-service/wcj-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wcj-web/wcj-web.iml" filepath="$PROJECT_DIR$/wcj-web/wcj-web.iml" />
+    </modules>
+  </component>
+</project>
